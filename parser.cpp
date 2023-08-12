@@ -2,19 +2,31 @@
 
 
 Token get_token();
+
 double expression() {
-  double left = expression();
+  double left = term();
   Token t = get_token();
-  switch(t.kind) {
-    case '+':
-      return left + expression();
-    case '-':
-      return left - expression();
-    default:
-      return expression();
+  while (true) {
+    switch(t.kind) {
+      case '+':
+        left += term();
+        t = get_token();
+        break;
+      case '-':
+        left -= term();
+        t = get_token();
+        break;
+      default:
+        return left;
   }
+  return left;
 }
-double term();
+
+double term() {
+  double left = primary();
+  Token t = get_token();  
+}
+
 double primary();
 
 
