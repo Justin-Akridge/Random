@@ -66,6 +66,16 @@ double term() {
 }
 
 int main() {
-  Token t1('8', 43.34);
-  std::cout << t1.value << t1.kind;
+  try {
+    while (cin)
+      std::cout << expression() << std::endl;
+  }
+  catch(exception &e) {
+    std::cerr << e.what() << '\n';
+    return 1;
+  }
+  catch(...) {
+    std::cerr << "exception" << std::endl;
+    return 2;
+  }
 }
