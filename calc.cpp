@@ -1,33 +1,71 @@
 #include <iostream>
-#include <string>
-#include <cctype>
 
-int main() {
-  while (true) {
-    std::cout << "Enter a operand: ";
-    char oper;
-    std::cin >> oper;
-    if (oper == '+' || oper == '-'|| oper == '*' || oper == '/') {
-      int val1, val2;
-      std::cout << "Enter the two integers: ";
-      std::cin >> val1 >> val2;
-      switch(oper) {
-        case '+':
-          std::cout << val1 + val2 << std::endl;
-          break;
-        case '-':
-          std::cout << val1 - val2 << std::endl;
-          break;
-        case '*':
-          std::cout << val1 * val2 << std::endl;
-          break;
-        case '/':
-          std::cout << val1 / val2 << std::endl;
-          break;
-      }
-      break;
+class Token {
+public:
+  char kind;
+  double value;
+  Token(char ch)
+    :kind(ch), value(0) {}
+  Token(char ch, double val)
+    :kind(ch), value(val) {}
+};
+
+void error(std::string s) {
+  std::cerr << s << std::endl;
+}
+
+double expression() {
+  double left = expression();
+  Token t = get_token();
+  while (t.kind == '+' || t.kind == '-') {
+    if (t.kind == '+') {
+      left += term();
     } else {
-      std::cout << "Invalid, Enter proper operand.\n";
+        left -= term();
+      t = get_token();
     }
   }
+  return left;
+}
+
+double primary() {
+  Token t = get_token();
+  switch(t.kind) {
+    case '(':
+      double d = expression();
+      t = get_token();
+      if (t.kind != ')') error("Epected ')'");
+      return d;
+    case '8':
+      return t.value;
+    defaut:
+      error("Primary expected");
+  }
+}
+
+double term() {
+  double left = primary();
+  Token t = get_token();
+  while (true) {
+    switch(t.kind) {
+      case '*':
+        left *= primary();
+        t = get_token();
+        break;
+      case '/':
+        double d = primary();
+        if (d == 0) error("This is an invalid response");
+        left /= primary();
+        t = get_token();
+        break;
+      default:
+        return left;
+    }
+  }
+  return left;
+}
+
+int main() {
+  Token t1('8', 43.34);
+  std::cout << t1.value << t1.kind;
 }
