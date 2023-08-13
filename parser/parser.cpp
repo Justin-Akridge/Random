@@ -1,6 +1,8 @@
 #include <iostream>
+#include "add.h"
 #include <string>
 
+std::cout << add(5, 4) << std::endl;
 void error(std::string s);
 double primary();
 double term();
