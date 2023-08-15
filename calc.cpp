@@ -1,18 +1,24 @@
 #include <iostream>
+#include <string>
+
+void error(std::string);
+double primary();
+double term();
+double expression();
 
 class Token {
 public:
   char kind;
   double value;
   Token(char ch)
-    :kind(ch), value(0) {}
-  Token(char ch, double val)
-    :kind(ch), value(val) {}
+    :kind(ch), value(0) { }
+  Token(char ch, int val)
+    :kind(ch), value(val) { }
 };
 
 Token get_token() {
     char ch;
-    cin >> ch;
+    std::cin >> ch;
     switch (ch) {
       case '(': case ')': case '+': case '-': case '*': case '/':
           return Token(ch);
@@ -21,27 +27,22 @@ Token get_token() {
       case '5': case '6': case '7': case '8': case '9':
       {
           std::cin.putback(ch);
-          double val;
-          std::cin >> val;
+          double val; std::cin >> val;
           return Token('8', val);
       }
       default:
-          error("Bad token");
+          error("bad token");
     }
 }
 
-void error(std::string);
-double primary();
-double term();
-double expression();
-
 int main() {
   try {
-    while (cin)
+    while (std::cin)
       std::cout << expression() << std::endl;
+    throw 20;
   }
-  catch(exception &e) {
-    std::cerr << e.what() << '\n';
+  catch(int e) {
+    std::cerr << e << '\n';
     return 1;
   }
   catch(...) {
@@ -58,10 +59,12 @@ double primary() {
   Token t = get_token();
   switch(t.kind) {
     case '(':
-      double d = expression();
-      t = get_token();
-      if (t.kind != ')') error("Epected ')'");
-      return d;
+      {
+        double d = expression();
+        t = get_token();
+        if (t.kind != ')') error("Expected ')'");
+        return d;
+      }
     case '8':
       return t.value;
     defaut:
@@ -89,15 +92,19 @@ double term() {
   while (true) {
     switch(t.kind) {
       case '*':
-        left *= primary();
-        t = get_token();
-        break;
+        {
+          left *= primary();
+          t = get_token();
+          break;
+        }
       case '/':
-        double d = primary();
-        if (d == 0) error("This is an invalid response");
-        left /= primary();
-        t = get_token();
-        break;
+        {
+          double d = primary();
+          if (d == 0) error("This is an invalid response");
+          left /= primary();
+          t = get_token();
+          break;
+        }
       default:
         return left;
     }
