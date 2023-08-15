@@ -55,33 +55,18 @@ void error(std::string s) {
   std::cerr << s << std::endl;
 }
 
-double primary() {
-  Token t = get_token();
-  switch(t.kind) {
-    case '(':
-      {
-        double d = expression();
-        t = get_token();
-        if (t.kind != ')') error("Expected ')'");
-        return d;
-      }
-    case '8':
-      return t.value;
-    defaut:
-      error("Primary expected");
-  }
-}
-
 double expression() {
-  double left = expression();
+  double left = term();
   Token t = get_token();
-  while (t.kind == '+' || t.kind == '-') {
-    if (t.kind == '+') {
-      left += term();
-    } else {
-        left -= term();
-      t = get_token();
-    }
+  while (true) {
+    switch(t.kind) {
+      case '+':
+        return left += term();
+      case '-':
+        return left -= term();
+      default:
+        return term();
+    } 
   }
   return left;
 }
@@ -100,7 +85,7 @@ double term() {
       case '/':
         {
           double d = primary();
-          if (d == 0) error("This is an invalid response");
+          if (d == 0) error("Cannot divide by 0");
           left /= primary();
           t = get_token();
           break;
@@ -110,4 +95,21 @@ double term() {
     }
   }
   return left;
+}
+
+double primary() {
+  Token t = get_token();
+  switch(t.kind) {
+    case '(':
+    {
+      double d = expression();
+      t = get_token();
+      if (t.kind != ')') error("Expected ')'");
+      return d;
+    }
+    case '8':
+      return t.value;
+    defaut:
+      error("Primary expected");
+  }
 }
