@@ -1,3 +1,5 @@
+#include "Token.hpp"
+
 class Token_stream {
 public: 
   Token_stream();
@@ -5,7 +7,7 @@ public:
   void putback(Token t);
 private:
   bool full;
-  Token buffer
+  Token buffer;
 };
 
 Token_stream::Token_stream()

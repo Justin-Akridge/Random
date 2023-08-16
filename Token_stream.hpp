@@ -1,3 +1,6 @@
+#pragma once
+#include "Token_stream.hpp"
+#include "Token.hpp"
 
 class Token_stream {
 public: 
@@ -6,10 +9,10 @@ public:
   void putback(Token t);
 private:
   bool full;
-  Token buffer
+  Token buffer;
 };
 
 Token_stream::Token_stream()
   :full(false), buffer(0) { }
 
-Token_stream::get();
+Token_stream get();
